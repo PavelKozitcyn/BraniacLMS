@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'mainapp'
+    'mainapp',
 ]
 
 MIDDLEWARE = [
@@ -78,7 +78,13 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    },
+    # # 'user': {
+    # #     'NAME': 'user_db',
+    # #     'ENGINE': 'django.db.backends.mysql',
+    # #     'USER': 'mysql_user',
+    # #     'PASSWORD': 'privet'
+    # }
 }
 
 # Password validation

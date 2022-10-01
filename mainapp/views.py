@@ -1,6 +1,9 @@
 from django.http import HttpResponse
 from django.views.generic import TemplateView
 from datetime import datetime
+from django.core.paginator import Paginator
+
+from .models import News
 
 class MainPageView(TemplateView):
     template_name = 'index.html'
@@ -24,13 +27,18 @@ class LoginPageView(TemplateView):
 
 class NewsPageView(TemplateView):
     template_name = 'news.html'
+    paginated_by = 3
 
     def get_context_data(self, **kwargs):
+        page_number = self.request.GET.get(
+            'page',
+            1
+        )
+        paginator = Paginator(News.objects.all(), self.paginated_by)
+        page = paginator.get_page(page_number)
+
         context = super().get_context_data(**kwargs)
 
-        context['news_title'] = 'Новость'
-        context['description'] = 'Предварительное описание новости'
-        context['news_date'] = datetime.now()
-        context['range'] = range(5)
+        context['page'] = page
 
         return context
