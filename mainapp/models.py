@@ -7,7 +7,7 @@ from mainapp.manadgers.news_manager import NewsManager
 class News(models.Model):
     object = NewsManager()
     title = models.CharField(max_length=256, verbose_name="Title")
-    preambule = models.CharField(max_length=1024, blank=True, null=True, verbose_name="Preambule")
+    #preambule = models.CharField(max_length=1024, blank=True, null=True, verbose_name="Preambule")
     body = models.TextField(blank=False, null=False, verbose_name="Body")
     body_as_markdown = models.BooleanField(
         default=False,

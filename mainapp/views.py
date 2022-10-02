@@ -34,7 +34,7 @@ class NewsPageView(TemplateView):
             'page',
             1
         )
-        paginator = Paginator(News.objects.all(), self.paginated_by)
+        paginator = Paginator(News.object.all(), self.paginated_by)
         page = paginator.get_page(page_number)
 
         context = super().get_context_data(**kwargs)
