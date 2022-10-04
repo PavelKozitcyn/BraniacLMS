@@ -107,6 +107,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = "authapp.CustomUser"
+
+LOGIN_REDIRECT_URL = "mainapp:main_page"
+LOGOUT_REDIRECT_URL = "mainapp:main_page"
+
+MESSAGE_STORAGE = "django.contrib.messages.storage.session.SessionStorage"
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
@@ -136,9 +143,3 @@ MEDIA_URL = "/media/"
 
 MEDIA_ROOT = BASE_DIR / "media"
 
-AUTH_USER_MODEL = "authapp.CustomUser"
-
-LOGIN_REDIRECT_URL = "mainapp:main_page"
-LOGOUT_REDIRECT_URL = "mainapp:main_page"
-
-MESSAGE_STORAGE = "django.contrib.messages.storage.session.SessionStorage"

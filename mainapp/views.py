@@ -1,5 +1,7 @@
 from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView
+from mainapp import models as mainapp_models
 from datetime import datetime
 from django.core.paginator import Paginator
 
@@ -24,6 +26,13 @@ class DocSitePageView(TemplateView):
 class LoginPageView(TemplateView):
     template_name = 'login.html'
 
+class NewsPageDetailView(TemplateView):
+    template_name = "mainapp/news_detail.html"
+
+    def get_context_data(self, pk=None, **kwargs):
+        context = super().get_context_data(pk=pk, **kwargs)
+        context["news_object"] = get_object_or_404(mainapp_models.News, pk=pk)
+        return context
 
 class NewsPageView(TemplateView):
     template_name = 'news.html'
