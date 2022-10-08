@@ -15,7 +15,7 @@ Including another URLconf
 """
 #path('mainapp/', include('mainapp.urls', namespace=MainappConfig.name)),
 from mainapp.apps import MainappConfig
-
+import debug_toolbar
 
 from django.conf import settings
 from django.conf.urls.static import static
