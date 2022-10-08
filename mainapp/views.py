@@ -2,12 +2,13 @@ from django.http import HttpResponse
 import logging
 
 from django.conf import settings
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.http import JsonResponse
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
+from django.core.cache import cache
+from django.http import FileResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DeleteView, DetailView, ListView, TemplateView, UpdateView
+from django.views.generic import CreateView, DeleteView, DetailView, ListView, TemplateView, UpdateView, View
 
 from mainapp import forms as mainapp_forms
 from mainapp import models as mainapp_models
@@ -74,6 +75,7 @@ class CoursesDetailView(TemplateView):
     template_name = "courses_detail.html"
 
     def get_context_data(self, pk=None, **kwargs):
+        logger.debug("Yet another log message")
         context = super(CoursesDetailView, self).get_context_data(**kwargs)
         context["course_object"] = get_object_or_404(mainapp_models.Courses, pk=pk)
         context["lessons"] = mainapp_models.Lesson.objects.filter(course=context["course_object"])
@@ -85,9 +87,18 @@ class CoursesDetailView(TemplateView):
                 context["feedback_form"] = mainapp_forms.CourseFeedbackForm(
                     course=context["course_object"], user=self.request.user
                 )
-        context["feedback_list"] = mainapp_models.CourseFeedback.objects.filter(
-            course=context["course_object"]
-        ).order_by("-created", "-rating")[:5]
+
+        cached_feedback = cache.get(f"feedback_list_{pk}")
+        if not cached_feedback:
+            context["feedback_list"] = (
+                mainapp_models.CourseFeedback.objects.filter(course=context["course_object"])
+                    .order_by("-created", "-rating")[:5]
+                    .select_related()
+            )
+            cache.set(f"feedback_list_{pk}", context["feedback_list"], timeout=300)  # 5 minutes
+        else:
+            context["feedback_list"] = cached_feedback
+
         return context
 
 class CourseFeedbackFormProcessView(LoginRequiredMixin, CreateView):
@@ -110,7 +121,7 @@ class DocSitePageView(TemplateView):
     template_name = 'doc_site.html'
 
 class LogView(TemplateView):
-    template_name = "mainapp/log_view.html"
+    template_name = "log_view.html"
 
     def get_context_data(self, **kwargs):
         context = super(LogView, self).get_context_data(**kwargs)
