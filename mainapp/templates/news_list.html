@@ -1,9 +1,20 @@
 {% extends 'base.html'%}
 
+{% block title %}
+Новости
+{% endblock title %}
+
 {% block content %}
 
 {% include 'mainapp/components/top_nav_panel.html' %}
 
+{% if page_num %}
+<div class="card my-2">
+  <div class="card-body">
+    <p class="card-text">Текущая страница: {{ page_num }}</p>
+  </div>
+</div>
+{% endif %}
 
 <div class="row">
 
@@ -13,8 +24,10 @@
         <div class="card my-2">
             <div class="card-body">
                 <h5 class="card-title">{{ new.title }}</h5>
-                <h6 class="card-subtitle mb-2 text-muted">{{ new.create_date|date:"Y-m-d h:i:s" }}</h6>
-                <p class="card-text">{{ new.body }}</p>
+                <h6 class="card-subtitle mb-2 text-muted">
+                    {{ new.created|date:"Y-m-d h:i:s" }}
+                </h6>
+                <p class="card-text">{{ new.preambule }}</p>
                 <a href="#" class="card-link">Подробнее</a>
             </div>
         </div>
@@ -44,6 +57,10 @@
                     <button type="submit" class="btn btn-primary btn-block">Фильтровать</button>
                 </form>
             </div>
+            {% if perms.mainapp.add_news %}
+            <a class="btn btn-primary btn-block" role="button"
+               href="{% url 'mainapp:news_create' %}">Добавить новость</a>
+            {% endif %}
         </div>
     </div>
 
